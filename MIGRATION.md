@@ -3,6 +3,7 @@
 - [From version 6.5.x to 7.0.0](#from-version-65x-to-700)
   - [7.0 breaking changes](#70-breaking-changes)
     - [Dropped support for Node 15 and below](#dropped-support-for-node-15-and-below)
+    - [ESM format in Main.js](#esm-format-in-mainjs)
     - [Modern browser support](#modern-browser-support)
     - [React peer dependencies required](#react-peer-dependencies-required)
     - [start-storybook / build-storybook binaries removed](#start-storybook--build-storybook-binaries-removed)
@@ -282,6 +283,48 @@ A number of these changes can be made automatically by the Storybook CLI. To tak
 #### Dropped support for Node 15 and below
 
 Storybook 7.0 requires **Node 16** or above. If you are using an older version of Node, you will need to upgrade or keep using Storybook 6 in the meantime.
+
+#### ESM format in Main.js
+
+Storybook 7.0 supports ESM in `.storybook/main.js`, and the configurations can be part of a default export. The default export will be the recommended way going forward.
+
+If your main.js file looks like this:
+
+```js
+module.exports = {
+  stories: ['../stories/**/*.stories.mdx', '../stories/**/*.stories.@(js|jsx|ts|tsx)'],
+  framework: { name: '@storybook/react-vite' },
+};
+```
+
+Or like this:
+
+```js
+export const stories = ['../stories/**/*.stories.mdx', '../stories/**/*.stories.@(js|jsx|ts|tsx)'];
+export const framework = { name: '@storybook/react-vite' };
+```
+
+Please migrate them to be default exported instead:
+
+```js
+const config = {
+  stories: ['../stories/**/*.stories.mdx', '../stories/**/*.stories.@(js|jsx|ts|tsx)'],
+  framework: { name: '@storybook/react-vite' },
+};
+export default config;
+```
+
+For Typescript users, we introduced types for that default export, so you can import it in your main.ts file. The `StorybookConfig` type will come from the Storybook package for the framework you are using, which relates to the package in the "framework" field you have in your main.ts file. For example, if you are using React Vite, you will import it from `@storybook/react-vite`:
+
+```ts
+import { StorybookConfig } from '@storybook/react-vite';
+
+const config: StorybookConfig = {
+  stories: ['../stories/**/*.stories.mdx', '../stories/**/*.stories.@(js|jsx|ts|tsx)'],
+  framework: { name: '@storybook/react-vite' },
+};
+export default config;
+```
 
 #### Modern browser support
 
@@ -1001,8 +1044,8 @@ Then enable the `legacyMdx1` feature flag in your `.storybook/main.js` file:
 export default {
   features: {
     legacyMdx1: true,
-  }
-}
+  },
+};
 ```
 
 NOTE: This only affects `.(stories|story).mdx` files. Notably, if you want to use Storybook 7's "pure" `.mdx` format, you'll need to use MDX2 for that.
