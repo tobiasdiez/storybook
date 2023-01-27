@@ -69,7 +69,7 @@ npx storybook@next upgrade --prerelease
 
 When running the `upgrade` command above you should get a prompt asking you to migrate to `@storybook/sveltekit`, which should handle everything for you. In some cases it can't migrate for you, eg. if your existing Storybook setup is based on Webpack. In such cases, refer to the manual migration below.
 
-Storybook 7.0 automatically loads your Vite config, and by extension your Svelte config. If you had a `svelteOptions` property in `.storybook/main.cjs` the automigration will have removed it, as it is no longer supported.
+Storybook 7.0 automatically loads your Vite config, and by extension your Svelte config. If you had a `svelteOptions` property in `.storybook/main.js` the automigration will have removed it, as it is no longer supported.
 
 #### Manual migration
 
@@ -79,17 +79,17 @@ Install the framework:
 yarn add -D @storybook/sveltekit@next
 ```
 
-Update your `main.cjs` to change the framework property:
+Update your `main.js` to change the framework property:
 
 ```js
-// .storybook/main.cjs
-module.exports = {
+// .storybook/main.js
+export default {
   ...
   framework: '@storybook/sveltekit',
 };
 ```
 
-Storybook 7.0 automatically loads your Vite config, and by extension your Svelte config. If you have a `svelteOptions` property in `.storybook/main.cjs` you need to remove that. See [Troubleshooting](#error-about-__esbuild_register_import_meta_url__-when-starting-storybook) below.
+Storybook 7.0 automatically loads your Vite config, and by extension your Svelte config. If you have a `svelteOptions` property in `.storybook/main.js` you need to remove that. See [Troubleshooting](#error-about-__esbuild_register_import_meta_url__-when-starting-storybook) below.
 
 Remove any redundant dependencies, if you have them:
 
@@ -110,7 +110,7 @@ yarn remove @storybook/builder-vite
 > ERR! SyntaxError: Identifier '__esbuild_register_import_meta_url__' has already been declared
 > ```
 
-You'll get this error when manually upgrading from 6.5 to 7.0. You need to remove the `svelteOptions` property in `.storybook/main.cjs`, as that is not supported by Storybook 7.0 + SvelteKit. The property is also not necessary anymore because the Vite and Svelte configurations are loaded automatically in Storybook 7.0.
+You'll get this error when manually upgrading from 6.5 to 7.0. You need to remove the `svelteOptions` property in `.storybook/main.js`, as that is not supported by Storybook 7.0 + SvelteKit. The property is also not necessary anymore because the Vite and Svelte configurations are loaded automatically in Storybook 7.0.
 
 ### Error: `Cannot read properties of undefined (reading 'disable_scroll_handling')` in preview
 
